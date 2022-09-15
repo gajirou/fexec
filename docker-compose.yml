@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  go:
+    build:
+      context: ./docker
+    volumes:
+      - type: bind
+        source: ./
+        target: /go/src
+      - type: bind
+        source: ~/.aws
+        target: /root/.aws
+    working_dir: /go/src
+    environment:
+      - TZ=Asia/Tokyo
+    tty: true

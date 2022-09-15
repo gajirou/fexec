@@ -1,0 +1,51 @@
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - dir: cmd
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+
+archives:
+  - name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+    replacements:
+      darwin: macos
+      linux:  linux
+      amd64:  amd64
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+
+release:
+  github:
+    owner: gajirou
+    name: fexec
+
+brews:
+  - name: fexec
+    tap:
+      owner: gajirou
+      name: homebrew-fexec
+      branch: main
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    commit_author:
+      name: gajirou
+      email: lifelongsre@gmail.com
+    description: "Connect to a container running on AWS Fargate."
+    test: |
+      system "#{bin}/goreleaser -v"
+    dependencies:
+      - name: go
