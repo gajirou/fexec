@@ -100,7 +100,7 @@ func _main() int {
 	cmd.Stdout = os.Stdout
 	cmd.Stdin = os.Stdin
 
-	// チャネルを使ってシグナルを無視する
+	// ゴルーチンで受信したシグナルを破棄する
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt, syscall.SIGINT)
 	go func() {
