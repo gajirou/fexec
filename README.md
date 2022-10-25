@@ -31,3 +31,4 @@ tar xzf fexec*.tar.gz
 - windows コンテナ対応
 - EC2 タイプコンテナ
 - Readme をかっこよくする
+- AWS の各リソース取得上限をいい感じに処理できるようにする。
