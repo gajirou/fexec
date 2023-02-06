@@ -3,6 +3,8 @@ services:
   go:
     build:
       context: ./docker
+    image: go
+    container_name: fexec
     volumes:
       - type: bind
         source: ./
