@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"os/exec"
+	"sort"
 	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -141,6 +142,7 @@ func (awsUtil *AwsUtil) GetCluster() (cluster string, err error) {
 		return "", err
 	}
 	// クラスター一覧選択
+	sort.Strings(clusters)
 	cluster, err = awsUtil.scrif.ScreenDraw(clusters, "cluster")
 	// クラスター未選択
 	if cluster == "" {
@@ -182,6 +184,7 @@ func (awsUtil *AwsUtil) GetService(cluster string) (service string, err error) {
 		return "", err
 	}
 	// サービス一覧選択
+	sort.Strings(services)
 	service, err = awsUtil.scrif.ScreenDraw(services, "service")
 	// サービス未選択
 	if service == "" {
@@ -216,6 +219,7 @@ func (awsUtil *AwsUtil) GetTask(cluster string, service string) (task string, er
 		tasks = append(tasks, strings.Split(v, "/")[len(strings.Split(v, "/"))-2]+"/"+strings.Split(v, "/")[len(strings.Split(v, "/"))-1])
 	}
 	// タスク一覧選択
+	sort.Strings(tasks)
 	task, err = awsUtil.scrif.ScreenDraw(tasks, "task")
 	// タスク未選択
 	if task == "" {
@@ -247,6 +251,7 @@ func (awsUtil *AwsUtil) GetContainer(cluster string, task string) (container str
 		containers = append(containers, *v.Name)
 	}
 	// コンテナ一覧選択
+	sort.Strings(containers)
 	container, err = awsUtil.scrif.ScreenDraw(containers, "container")
 	// コンテナ未選択
 	if container == "" {
