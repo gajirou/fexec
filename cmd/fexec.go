@@ -8,6 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/aws/aws-sdk-go-v2/aws"
 	fexec "github.com/gajirou/fexec/util"
 )
 
@@ -28,11 +29,21 @@ func _main() int {
 		return 1
 	}
 
-	// aws プロファイルの取得
-	awsCfg, err := awsutil.FindProfile(*profile)
-	if err != nil {
-		return 1
+	var awsCfg aws.Config
+	if os.Getenv("AWS_SESSION_TOKEN") == "" {
+		// aws プロファイルからコンフィグ取得
+		awsCfg, err = awsutil.FindProfile(*profile)
+		if err != nil {
+			return 1
+		}
+	} else {
+		// aws セッショントークンからコンフィグ取得
+		awsCfg, err = awsutil.FindSessionToken()
+		if err != nil {
+			return 1
+		}
 	}
+
 	// プロファイル未取得
 	if awsCfg.Region == "" {
 		return 0
