@@ -1,9 +1,11 @@
+version: 2
+
 before:
   hooks:
     - go mod tidy
 
 builds:
-  - dir: cmd
+  - main: ./cmd
     env:
       - CGO_ENABLED=0
     goos:
@@ -17,10 +19,6 @@ builds:
 
 archives:
   - name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
-    replacements:
-      darwin: macos
-      linux:  linux
-      amd64:  amd64
 
 changelog:
   sort: asc
@@ -36,7 +34,7 @@ release:
 
 brews:
   - name: fexec
-    tap:
+    repository:
       owner: gajirou
       name: homebrew-fexec
       branch: main
