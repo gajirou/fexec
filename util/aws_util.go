@@ -76,22 +76,36 @@ func (awsUtil *AwsUtil) CheckBinFIle(binname string) error {
 	return err
 }
 
-// AWS プロファイル取得
+// AWS プロファイル利用
 func (awsUtil *AwsUtil) FindProfile(profile string) (aws.Config, error) {
 	// 利用プロファイル
 	awsProfile := profile
 
 	// 環境変数設定時にパラメータ未指定の場合
-	if profile == "default" && os.Getenv("AWS_DEFAULT_PROFILE") != "" {
+	if awsProfile == "default" && os.Getenv("AWS_DEFAULT_PROFILE") != "" {
 		// 環境変数設定時は環境変数のプロファイルを利用
 		awsProfile = os.Getenv("AWS_DEFAULT_PROFILE")
 	}
 
-	// プロファイル取得
+	// プロファイルからコンフィグ取得
 	awsCfg, err := awsUtil.cfgif.LoadDefaultConfig(
 		context.TODO(),
 		config.WithSharedConfigProfile(awsProfile),
 	)
+	if err != nil {
+		PrintMessage("ERR002")
+		return awsCfg, err
+	}
+	if awsCfg.Region == "" {
+		PrintMessage("INF001")
+	}
+	return awsCfg, nil
+}
+
+// AWS セッショントークン利用
+func (awsUtil *AwsUtil) FindSessionToken() (aws.Config, error) {
+	// コンフィグ取得
+	awsCfg, err := awsUtil.cfgif.LoadDefaultConfig(context.TODO())
 	if err != nil {
 		PrintMessage("ERR002")
 		return awsCfg, err
