@@ -1,12 +1,13 @@
 services:
   go:
     build:
-      context: ./docker
+      context: .
+      dockerfile: Dockerfile
     image: go
     container_name: fexec
     volumes:
       - type: bind
-        source: ./
+        source: ../
         target: /go/src
       - type: bind
         source: ~/.aws

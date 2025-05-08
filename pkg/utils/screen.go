@@ -1,4 +1,4 @@
-package fexec
+package utils
 
 import (
 	"github.com/AlecAivazis/survey/v2"
@@ -6,7 +6,6 @@ import (
 )
 
 var (
-	// ターミナル描画用ラベルメッセージ
 	labelMessage = map[string]string{
 		"cluster":   "対象のクラスター名を選択してください：",
 		"service":   "対象のサービス名を選択してください：",
@@ -15,14 +14,11 @@ var (
 	}
 )
 
-// 回答保持用構造体
 var answers struct {
 	Askone string `survey:"askone"`
 }
 
-// ターミナルリスト選択
 func ScreenDraw(options []string, label string) (string, error) {
-	// select 形式で表示
 	var qs = []*survey.Question{
 		{
 			Name: "askone",
@@ -36,11 +32,9 @@ func ScreenDraw(options []string, label string) (string, error) {
 	}
 	err := survey.Ask(qs, &answers)
 	if err != nil {
-		// SIGINT の場合は err を返さない
 		if err == terminal.InterruptErr {
 			return "", nil
 		}
-		PrintMessage("ERR999")
 		return "", err
 	}
 	return answers.Askone, nil
