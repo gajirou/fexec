@@ -88,26 +88,26 @@ func Run() error {
 		return nil
 	}
 
-	containars, err := ecsService.GetContainers(cluster, task)
+	containers, err := ecsService.GetContainers(cluster, task)
 	if err != nil {
 		utils.PrintMessage("ERR006")
 		return err
 	}
-	if containars == nil {
+	if containers == nil {
 		utils.PrintMessage("INF007")
 		return nil
 	}
-	containar, err := utils.ScreenDraw(containars, "containars")
+	container, err := utils.ScreenDraw(containers, "containers")
 	if err != nil {
 		utils.PrintMessage("ERR999")
 		return err
 	}
-	if containar == "" {
+	if container == "" {
 		utils.PrintMessage("INF008")
 		return nil
 	}
 
-	execCmd, err := ecsService.ExecuteContainer(cluster, task, containar)
+	execCmd, err := ecsService.ExecuteContainer(cluster, task, container)
 	if err != nil {
 		utils.PrintMessage("INF009")
 		return err
@@ -122,13 +122,9 @@ func Run() error {
 	cmd.Stdout = os.Stdout
 	cmd.Stdin = os.Stdin
 
-	sig := make(chan os.Signal, 1)
-	signal.Notify(sig, os.Interrupt, syscall.SIGINT)
-	go func() {
-		for {
-			select {}
-		}
-	}()
+	signal.Ignore(os.Interrupt, syscall.SIGTERM)
+	defer signal.Reset(os.Interrupt, syscall.SIGTERM)
+	
 	if err := cmd.Run(); err != nil {
 		utils.PrintMessage("ERR999")
 		return err
